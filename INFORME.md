@@ -23,3 +23,7 @@
    make qemu
   
   4. ejecute los comandos de prueba y tome los screenshots.
+   ```bash
+   $ ls
+   $ echo "Hola xv6"
+   $ cat README
