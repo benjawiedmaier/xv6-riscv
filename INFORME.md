@@ -21,5 +21,5 @@
    sudo apt install -y git build-essential gdb-multiarch qemu-system-misc gcc-riscv64-unknown-elf binutils-riscv64-unknown-elf
    # Desde la carpeta clonada
    make qemu
-  ´´´
+  
   4. ejecute los comandos de prueba y tome los screenshots.
