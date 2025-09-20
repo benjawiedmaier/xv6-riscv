@@ -6,6 +6,7 @@
 #include "spinlock.h"
 #include "proc.h"
 #include "vm.h"
+// #include "syscall.h" 
 
 uint64
 sys_exit(void)
@@ -104,4 +105,36 @@ sys_uptime(void)
   xticks = ticks;
   release(&tickslock);
   return xticks;
+}
+
+// kernel/sysproc.c
+uint64
+sys_getppid(void)
+{
+  struct proc *p = myproc();
+  if(p->parent == 0) // Si no tiene padre (como init)
+    return 1; // init tiene PID 1
+  return p->parent->pid;
+}
+
+uint64
+sys_getancestor(void)
+{
+  int level;
+  struct proc *p = myproc();
+  
+  // Obtener el parámetro sin verificar retorno (como sys_kill)
+  argint(0, &level);
+  
+  if(level < 0)
+    return -1;
+  
+  for(int i = 0; i < level; i++) {
+    if(p->parent == 0) {
+      return -1;
+    }
+    p = p->parent;
+  }
+  
+  return p->pid;
 }
