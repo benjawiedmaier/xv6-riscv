@@ -10,6 +10,7 @@ Implementación de las syscalls `getppid()` y `getancestor()` en xv6-riscv para 
 se crea una rama para la tarea 1 a partir del repositorio original 
 
 ### Paso 2: Agregar números de syscall
+#### este y los pasos posteriores se realizaron en vscode
 **Archivo: `kernel/syscall.h`**
 ```c
 #define SYS_getppid    22
