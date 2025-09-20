@@ -34,10 +34,8 @@ uint64
 sys_getppid(void)
 {
   struct proc *p = myproc();
-  
-  if(p->parent == 0)
-    return 1;
-  
+  if(p->parent == 0) // Si no tiene padre (como init)
+    return 1; // init tiene PID 1
   return p->parent->pid;
 }
 
@@ -45,15 +43,13 @@ uint64
 sys_getancestor(void)
 {
   int level;
-  struct proc *p;
+  struct proc *p = myproc();
   
-  if(argint(0, &level) < 0)
-    return -1;
+  // Obtener el parámetro sin verificar retorno (como sys_kill)
+  argint(0, &level);
   
   if(level < 0)
     return -1;
-  
-  p = myproc();
   
   for(int i = 0; i < level; i++) {
     if(p->parent == 0) {
