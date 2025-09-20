@@ -62,7 +62,7 @@ sys_getancestor(void)
 }
 ```
 
-### Paso 5: Agregar prototipos de usuario
+### Paso 5: Declarar las funciones para poder llamarlas desde el usuario
 **Archivo: `user/user.h`**
 ```c
 int getppid(void);
@@ -135,7 +135,7 @@ UPROGS=\
 
 | Error | Solución |
 |-------|----------|
-| `void value not ignored as it ought to be` | Agregar `#include "syscall.h"` en `kernel/sysproc.c` |
+| `void value not ignored as it ought to be` | Eliminar la verificación del valor de retorno de `argint()`, usando `argint(0, &level);` sin el if |
 | `implicit declaration of function` | Agregar prototipos en `user/user.h` |
 | Dudas sobre ubicación de cambios | Confirmar edición en archivos fuente desde WSL/Ubuntu |
 
