@@ -5,12 +5,9 @@ Implementación de las syscalls `getppid()` y `getancestor()` en xv6-riscv para 
 
 ## 🛠️ Pasos de Implementación
 
-### Paso 1: Configuración inicial
-```bash
-git clone https://github.com/mit-pdos/xv6-riscv.git
-cd xv6-riscv
-git checkout -b tarea1-syscalls
-```
+### Paso 1: Configuración inicial mit-pdos/xv6-riscv
+
+se crea una rama para la tarea 1 a partir del repositorio original 
 
 ### Paso 2: Agregar números de syscall
 **Archivo: `kernel/syscall.h`**
