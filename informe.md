@@ -110,7 +110,9 @@ int main(void) {
 
 ## Resultados de Ejecución
 
-[ESPACIO PARA CAPTURA DE PANTALLA DEL OUTPUT]
+<img width="2872" height="1702" alt="image" src="https://github.com/user-attachments/assets/ce6bf2fa-2b49-4d5f-a126-120b343e75e5" />
+
+
 
 ```
 === DEMO LOTTERY SCHEDULING ===
