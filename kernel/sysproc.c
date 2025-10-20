@@ -6,6 +6,7 @@
 #include "spinlock.h"
 #include "proc.h"
 #include "vm.h"
+#include "syscall.h" 
 
 uint64
 sys_exit(void)
@@ -106,4 +107,24 @@ sys_uptime(void)
   xticks = ticks;
   release(&tickslock);
   return xticks;
+}
+
+// Agregar función sys_settickets
+uint64
+sys_settickets(void)
+{
+  int n;
+  struct proc *p = myproc();
+  
+  // Obtener el argumento directamente del trapframe
+  n = p->trapframe->a0;
+  
+  if(n < 1)
+    n = 1;
+  
+  acquire(&p->lock);
+  p->tickets = n;
+  release(&p->lock);
+  
+  return 0;
 }
