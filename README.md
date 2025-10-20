@@ -3,6 +3,12 @@
 ## Objetivo
 Reemplazar el planificador **Round-Robin** de XV6 por un sistema de **Lottery Scheduling**, donde la fracción de CPU que recibe cada proceso sea proporcional a la cantidad de "tickets" que posee.
 
+## Compilacion
+para compilar ejecutar al igual que en trabajos anteriores:
+```c
+make clean
+make qemu
+```
 ## Modificaciones Implementadas
 
 ### 1. Estructura del Proceso (`proc.h`)
@@ -143,8 +149,3 @@ Inicio: proceso 9, tickets: 500
 
 Se implementó exitosamente el Lottery Scheduling en XV6, reemplazando el scheduler Round-Robin original. El sistema ahora asigna tiempo de CPU proporcional a los tickets de cada proceso, demostrando un enfoque diferente a la planificación de procesos que prioriza la proporcionalidad sobre la equidad.
 
-La implementación requirió modificaciones coordinadas en múltiples componentes del kernel, destacando la importancia de la arquitectura modular de XV6 y la correcta coordinación entre espacio de kernel y usuario para las system calls.
-You will need a RISC-V "newlib" tool chain from
-https://github.com/riscv/riscv-gnu-toolchain, and qemu compiled for
-riscv64-softmmu.  Once they are installed, and in your shell
-search path, you can run "make qemu".
