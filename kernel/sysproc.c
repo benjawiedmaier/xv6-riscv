@@ -5,15 +5,55 @@
 #include "memlayout.h"
 #include "spinlock.h"
 #include "proc.h"
-#include "vm.h"
+
+// ------------------------------
+// SYSCALLS SEGÚN TU VERSIÓN XV6
+// ------------------------------
+
+uint64
+sys_fork(void)
+{
+  return kfork();     // tu kernel SI tiene kfork()
+}
 
 uint64
 sys_exit(void)
 {
   int n;
   argint(0, &n);
-  kexit(n);
-  return 0;  // not reached
+  kexit(n);           // tu kernel SI tiene kexit()
+  return 0;
+}
+
+uint64
+sys_wait(void)
+{
+  uint64 p;
+  argaddr(0, &p);
+  return kwait(p);    // tu kernel SI tiene kwait()
+}
+
+uint64
+sys_sbrk(void)
+{
+  int n;
+  argint(0, &n);
+
+  struct proc *p = myproc();
+  uint64 addr = p->sz;
+
+  if(growproc(n) < 0)
+    return -1;
+
+  return addr;
+}
+
+uint64
+sys_kill(void)
+{
+  int pid;
+  argint(0, &pid);
+  return kkill(pid);  // tu kernel SI tiene kkill()
 }
 
 uint64
@@ -22,86 +62,68 @@ sys_getpid(void)
   return myproc()->pid;
 }
 
-uint64
-sys_fork(void)
-{
-  return kfork();
-}
-
-uint64
-sys_wait(void)
-{
-  uint64 p;
-  argaddr(0, &p);
-  return kwait(p);
-}
-
-uint64
-sys_sbrk(void)
-{
-  uint64 addr;
-  int t;
-  int n;
-
-  argint(0, &n);
-  argint(1, &t);
-  addr = myproc()->sz;
-
-  if(t == SBRK_EAGER || n < 0) {
-    if(growproc(n) < 0) {
-      return -1;
-    }
-  } else {
-    // Lazily allocate memory for this process: increase its memory
-    // size but don't allocate memory. If the processes uses the
-    // memory, vmfault() will allocate it.
-    if(addr + n < addr)
-      return -1;
-    myproc()->sz += n;
-  }
-  return addr;
-}
-
+// Tu kernel NO implementa kpause() → devolvemos 0
 uint64
 sys_pause(void)
 {
-  int n;
-  uint ticks0;
+  return 0;
+}
 
-  argint(0, &n);
-  if(n < 0)
-    n = 0;
+uint64
+sys_uptime(void)
+{
+  uint xticks = 0;
   acquire(&tickslock);
-  ticks0 = ticks;
-  while(ticks - ticks0 < n){
-    if(killed(myproc())){
+  xticks = ticks;
+  release(&tickslock);
+  return xticks;
+}
+
+uint64
+sys_sleep(void)
+{
+  int n;
+  argint(0, &n);
+
+  acquire(&tickslock);
+  uint64 ticks0 = ticks;
+
+  while (ticks - ticks0 < n) {
+    if (myproc()->killed) {
       release(&tickslock);
       return -1;
     }
-    sleep(&ticks, &tickslock);
+    sleep(&ticks, &tickslock);  // esta es la función REAL de tu kernel
   }
+
   release(&tickslock);
   return 0;
 }
 
 uint64
-sys_kill(void)
+sys_mrdprotect(void)
 {
-  int pid;
+  uint64 addr;
+  int len;
 
-  argint(0, &pid);
-  return kkill(pid);
+  argaddr(0, &addr);
+  argint(1, &len);
+
+  if (len <= 0) return -1;
+
+  return mrdprotect(addr, len);
 }
 
-// return how many clock tick interrupts have occurred
-// since start.
 uint64
-sys_uptime(void)
+sys_munrdprotect(void)
 {
-  uint xticks;
+  uint64 addr;
+  int len;
 
-  acquire(&tickslock);
-  xticks = ticks;
-  release(&tickslock);
-  return xticks;
+  argaddr(0, &addr);
+  argint(1, &len);
+
+  if (len <= 0) return -1;
+
+  return munrdprotect(addr, len);
 }
